@@ -1,5 +1,5 @@
-$imageInfo = docker images --format "{{.Repository}};{{.Tag}};{{.ID}}"
-$imageObject = $imageInfo | ConvertFrom-Csv -Delimiter ";" -Header "Repository", "Tag", "ID"
+$imageInfo = docker images --format "{{.Repository}};{{.Tag}}"
+$imageObject = $imageInfo | ConvertFrom-Csv -Delimiter ";" -Header "Repository", "Tag"
 
 foreach ($image in $imageObject) {	
     
@@ -14,8 +14,11 @@ foreach ($image in $imageObject) {
 
 	
 	$fileName = $repositoryName + '_' + $image.Tag + '.tar'
+	$repo = $RepoName + ':' + $image.Tag
 	echo "Exporting $repositoryName ..."
-	docker save -o $fileName $image.ID
+	
+	echo $repo
+	docker save -o $fileName $repo
 	echo "$repositoryName was exported successfully!`nfile name: $fileName"
 	echo =======================
 }
